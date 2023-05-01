@@ -37,8 +37,8 @@
           <input v-model="customHighlight"  v-on:keyup.13="handleNewHighlights"/>
           <ul>
               <li v-for="(h,i) in this.highlight" :key="i">
-                <span v-if="h.start && h.end">Range: <span :style="h.style || defaultStyle">{{h.text || h}} </span> </span>
-                <span v-else>Text: <span :style="h.style || defaultStyle">{{(h.text || h).toString()}}</span> </span>
+                <span v-if="h.start && h.end">Range: <span :class="h.classList || defaultClassList" :style="h.style || defaultStyle">{{h.text || h}} </span> </span>
+                <span v-else>Text: <span :class="h.classList || defaultClassList" :style="h.style || defaultStyle">{{(h.text || h).toString()}}</span> </span>
               </li>
           </ul>
 
@@ -47,6 +47,9 @@
 
           <h3> Source </h3>
           <a class="npminstall" href="https://github.com/SyedWasiHaider/vue-highlightable-input">https://github.com/SyedWasiHaider/vue-highlightable-input</a>
+
+          <h3> Icons </h3>
+          <p>Icons provided for free by <a href="https://icons8.com/" target="_blank">Icons8</a></p>
       </v-container>
     </v-app>
 </template>
@@ -64,9 +67,14 @@ export default {
   },
   data() {
     return {
-      msg: 'A bold new future hacker news',
-      defaultStyle: { 'background-color' : 'purple', 'color' : 'white' },
+      msg: 'When we go out to restaurants together, we like to order tasty food. I order a hamburger, and they order pizza and taccos. Whoops, we made a typo (and typo is always underlined!). I meant to type tacos. Also, the word Hamburger is CASEsensitive, so HAMBURGER will not trigger the styling.',
+      defaultClassList: [],
+      defaultStyle: { 'background-color' : 'gray', 'color' : 'white' },
       highlight: [
+        { text: 'hamburger', classList: ['icon', 'hamburger'], caseSensitive: true },
+        { text: 'pizza', classList: ['icon', 'pizza'] },
+        { text: 'taco', classList: ['icon', 'taco'] },
+        { text: 'typo', style: "border-bottom: 2px SOLID red" },
         {text:'hacker news', style:"background-color:#ff6600"},
         {text:'CASEsensitive', style:"background-color:#fca88f", caseSensitive: true},
         {text:'@Soup', style:"background-color:#bbe4cb"},
@@ -105,7 +113,8 @@ h3 {
 }
 
 li {
-  text-align: left
+  text-align: left;
+  margin-top: 5px;
 }
 
 a {
@@ -116,7 +125,8 @@ a {
   height: 40px;
   width: auto;
   margin: 30px;
-  background-color: #e2e1ee
+  background-color: #e2e1ee;
+  padding: 20px;
 }
 
 .npminstall {
@@ -134,11 +144,30 @@ a {
 }
 
 #container {
-    width: 640px; /*can be in percentage also.*/
+    width: 640px;
     height: auto;
     margin: 0 auto;
     padding: 10px;
     position: relative;
+}
+</style>
+
+<style>
+.icon {
+  background-size: contain;
+  background-repeat: no-repeat;
+  padding: 2px 2px 2px 25px;
+  border: 1px SOLID #000;
+  border-radius: 4px;
+}
+.hamburger {
+  background-image: url('../assets/icons8-hamburger-30.png');
+}
+.pizza {
+  background-image: url('../assets/icons8-pizza-30.png');
+}
+.taco {
+  background-image: url('../assets/icons8-taco-30.png');
 }
 
 </style>

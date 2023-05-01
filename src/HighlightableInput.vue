@@ -16,6 +16,8 @@ const tagsToReplace = {
 };
 
 export default {
+  name: 'HighlightableInput',
+
   props: {
     highlight: {
       type: Array,
@@ -24,6 +26,10 @@ export default {
     value: {
       type: String,
       default: null
+    },
+    defaultClassList: {
+      type: Array,
+      default: () => []
     },
     highlightStyle: {
       type: [String, Object],
@@ -161,7 +167,7 @@ export default {
       for (let k = 0; k < highlightPositions.length; k++) {
         let position = highlightPositions[k]
         result += this.safeTagsReplace(this.internalValue.substring(startingPosition, position.start))
-        result += "<span style='" + highlightPositions[k].style + "'>" + this.safeTagsReplace(this.internalValue.substring(position.start, position.end + 1)) + "</span>"
+        result += "<span class='" + highlightPositions[k].classList.join(' ') + "' style='" + highlightPositions[k].style + "'>" + this.safeTagsReplace(this.internalValue.substring(position.start, position.end + 1)) + "</span>"
         startingPosition = position.end + 1
       }
 
@@ -186,12 +192,12 @@ export default {
         return Math.max(o.end - o.start, max)
       }, 0)
       if (overlap.length == 0) {
-        intervalTree.insert(start, end, { start: start, end: end, style: highlightObj.style } )
+        intervalTree.insert(start, end, { start: start, end: end, style: highlightObj.style, classList: highlightObj.classList } )
       } else if ((end - start) > maxLengthOverlap) {
         overlap.forEach(o => {
           intervalTree.remove(o.start, o.end, o)
         })
-        intervalTree.insert(start, end, { start: start, end: end, style: highlightObj.style } )
+        intervalTree.insert(start, end, { start: start, end: end, style: highlightObj.style, classList: highlightObj.classList } )
       }
     },
 
@@ -206,20 +212,23 @@ export default {
 
       if (Object.prototype.toString.call(this.highlight) === '[object Array]' && this.highlight.length > 0) {
 
-        let globalDefaultStyle = typeof this.highlightStyle == 'string' ? this.highlightStyle : (Object.keys(this.highlightStyle).map(key => key + ':' + this.highlightStyle[key]).join(';') + ';')
+        const globalDefaultStyle = typeof this.highlightStyle == 'string' ? this.highlightStyle : (Object.keys(this.highlightStyle).map(key => key + ':' + this.highlightStyle[key]).join(';') + ';')
+        const globalDefaultClassList = this.defaultClassList
 
-        let regExpHighlights = this.highlight.filter(x => x == Object.prototype.toString.call(x) === '[object RegExp]')
-        let nonRegExpHighlights = this.highlight.filter(x => x == Object.prototype.toString.call(x) !== '[object RegExp]')
+        const regExpHighlights = this.highlight.filter(x => x == Object.prototype.toString.call(x) === '[object RegExp]')
+        const nonRegExpHighlights = this.highlight.filter(x => x == Object.prototype.toString.call(x) !== '[object RegExp]')
         return nonRegExpHighlights.map(h => {
           if (h.text || typeof h == "string") {
             return {
               text: h.text || h,
               style: h.style || globalDefaultStyle,
+              classList: h.classList || globalDefaultClassList,
               caseSensitive: h.caseSensitive
             }
           } else if (h.start != undefined && h.end != undefined) {
             return {
               style: h.style || globalDefaultStyle,
+              classList: h.classList || globalDefaultClassList,
               start: h.start,
               end: h.end,
               caseSensitive: h.caseSensitive
