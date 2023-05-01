@@ -1,11 +1,11 @@
 // rollup.config.js
-import vue from 'rollup-plugin-vue';
+import VuePlugin from '@yfwz100/rollup-plugin-vue2'
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 
 export default {
   plugins: [
-    vue({ /* configuration options. */ }),
+    VuePlugin(),
     resolve(),
     commonjs()
   ],
