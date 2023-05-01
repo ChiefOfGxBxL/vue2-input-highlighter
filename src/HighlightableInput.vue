@@ -7,6 +7,8 @@ import IntervalTree from 'node-interval-tree'
 import debounce from 'lodash/debounce'
 import isUndefined from 'lodash/isUndefined'
 
+import { getRegexIndices, getIndicesOf } from './utils'
+
 const tagsToReplace = {
   '&': '&amp;',
   '<': '&lt;',
@@ -127,7 +129,7 @@ export default {
         let indices = []
         if (highlightObj.text) {
           if (typeof highlightObj.text == "string") {
-            indices = this.getIndicesOf(highlightObj.text, this.internalValue, isUndefined(highlightObj.caseSensitive) ? this.caseSensitive : highlightObj.caseSensitive)
+            indices = getIndicesOf(highlightObj.text, this.internalValue, isUndefined(highlightObj.caseSensitive) ? this.caseSensitive : highlightObj.caseSensitive)
             indices.forEach(start => {
               let end = start + highlightObj.text.length - 1;
               this.insertRange(start, end, highlightObj, intervalTree)
@@ -135,7 +137,7 @@ export default {
           }
 
           if (Object.prototype.toString.call(highlightObj.text) === '[object RegExp]') {
-            indices = this.getRegexIndices(highlightObj.text, this.internalValue)
+            indices = getRegexIndices(highlightObj.text, this.internalValue)
             indices.forEach(pair => {
               this.insertRange(pair.start, pair.end, highlightObj, intervalTree)
             })
@@ -243,42 +245,6 @@ export default {
 
     replaceTag(tag) {
       return tagsToReplace[tag] || tag;
-    },
-
-    getRegexIndices(regex, str) {
-      if (!regex.global) {
-        console.error("Expected " + regex + " to be global")
-        return []
-      }
-
-      regex = RegExp(regex)
-      let indices = [];
-      let match = null;
-      while ((match = regex.exec(str)) != null) {
-        indices.push({ start: match.index, end: match.index + match[0].length - 1 });
-      }
-      return indices;
-    },
-
-    // Copied verbatim because I'm lazy:
-    // https://stackoverflow.com/questions/3410464/how-to-find-indices-of-all-occurrences-of-one-string-in-another-in-javascript
-    getIndicesOf(searchStr, str, caseSensitive) {
-      let searchStrLen = searchStr.length;
-      if (searchStrLen == 0) {
-        return [];
-      }
-      let startIndex = 0,
-        index,
-        indices = [];
-      if (!caseSensitive) {
-        str = str.toLowerCase();
-        searchStr = searchStr.toLowerCase();
-      }
-      while ((index = str.indexOf(searchStr, startIndex)) > -1) {
-        indices.push(index);
-        startIndex = index + searchStrLen;
-      }
-      return indices;
     },
 
     // Copied but modifed slightly from: https://stackoverflow.com/questions/14636218/jquery-convert-text-url-to-link-as-typing/14637351#14637351

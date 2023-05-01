@@ -9,7 +9,8 @@
     ],
     "scripts": {
         "build": "rollup -c",
-        "lint": "eslint --ext .js,.vue src"
+        "lint": "eslint --ext .js,.vue src test",
+        "test": "mocha"
     },
     "author": "Wasi Haider",
     "license": "MIT",
@@ -22,6 +23,7 @@
         "@yfwz100/rollup-plugin-vue2": "^6.0.0-1",
         "eslint": "^8.39.0",
         "eslint-plugin-vue": "^9.11.0",
+        "mocha": "^10.2.0",
         "rimraf": "^2.6.1",
         "rollup-plugin-commonjs": "^9.1.0",
         "rollup-plugin-node-resolve": "^3.3.0",
