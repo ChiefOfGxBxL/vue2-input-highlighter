@@ -1,5 +1,11 @@
 // Reference: https://eslint.vuejs.org/user-guide/
 module.exports = {
+  env: {
+    browser: true,
+    es6: true,
+    node: true,
+    mocha: true
+  },
   extends: [
     'eslint:recommended',
     // 'plugin:vue/vue3-recommended',
