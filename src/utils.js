@@ -1,8 +1,5 @@
 export function getRegexIndices(regex, str) {
-  if (!regex.global) {
-    console.error("Expected " + regex + " to be global")
-    return []
-  }
+  if (!regex.global) return []
 
   regex = RegExp(regex)
   let indices = [];

@@ -22,6 +22,7 @@ module.exports = {
     "indent": ["error", 2],
     "key-spacing": ["error", { "beforeColon": false }],
     "keyword-spacing": ["error", { "before": true, "after": true }],
+    "no-console": ["error"],
     "no-trailing-spaces": ["error"],
     "no-unreachable": ["error"],
     "no-var": ["error"],

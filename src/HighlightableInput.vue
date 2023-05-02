@@ -227,8 +227,6 @@ export default {
               end: h.end,
               caseSensitive: h.caseSensitive
             }
-          } else {
-            console.error("Please provide a valid highlight object or string")
           }
         }).sort((a,b) => (a.text && b.text) ? a.text > b.text : ((a.start == b.start ? (a.end < b.end) : (a.start < b.start)))).concat(regExpHighlights)
         // We sort here in ascending order because we want to find highlights for the smaller strings first
@@ -237,7 +235,6 @@ export default {
         // RegExp highlights are not sorted and simply concated (this could be done better  in the future)
       }
 
-      console.error("Expected a string or an array of strings")
       return null
     },
 
