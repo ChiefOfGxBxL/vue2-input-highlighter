@@ -4,6 +4,9 @@
     "type": "module",
     "description": "A Vue 2 component that highlights text as you type",
     "main": "./dist/vue-highlightable-input.js",
+    "engines": {
+        "node": ">= 14.0.0"
+    },
     "files": [
         "dist/"
     ],
