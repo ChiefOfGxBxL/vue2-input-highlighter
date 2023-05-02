@@ -18,8 +18,8 @@ export function getRegexIndices(regex, str) {
 
 // https://stackoverflow.com/questions/3410464/how-to-find-indices-of-all-occurrences-of-one-string-in-another-in-javascript
 export function getIndicesOf(searchStr, str, caseSensitive = false) {
+  if (!searchStr || !str) return []
   let searchStrLen = searchStr.length;
-  if (searchStrLen == 0) return []
 
   let startIndex = 0,
     index,
