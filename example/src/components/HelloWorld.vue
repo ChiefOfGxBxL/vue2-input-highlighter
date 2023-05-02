@@ -3,11 +3,11 @@
     <!-- Hero -->
     <section>
       <hgroup>
-        <h1>Vue Highlightable Input</h1>
+        <h1>Vue 2 Input Highlighter</h1>
         <h2><mark>Highlight</mark> and style specific words as you're typing.</h2>
       </hgroup>
-      <code class='execute'>npm install --save vue-highlightable-input</code>
-      <a href="https://github.com/Vision-Zero-Reporting/vue-highlightable-input">
+      <code class='execute'>npm install --save vue2-input-highlighter</code>
+      <a href="https://github.com/Vision-Zero-Reporting/vue2-input-highlighter">
         <img src="../assets/github-mark.svg" width="36" height="36" />
         GitHub
       </a>

@@ -11,7 +11,7 @@ export default {
   ],
   input: './src/HighlightableInput.vue',
   output: {
-    file: './dist/vue-highlightable-input.js',
+    file: './dist/vue2-input-highlighter.js',
     format: 'es'
   },
 };

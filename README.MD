@@ -1,9 +1,9 @@
-# Vue Highlightable Input
+# Vue 2 Input Highlighter
 Highlight and style specific words as you're typing.
 
 # Install
 ```sh
-npm install --save vue-highlightable-input
+npm install --save vue2-input-highlighter
 ```
 
 # Requirements
@@ -24,7 +24,7 @@ npm install --save vue-highlightable-input
 
 #### In your component code:
 ```js
-import HighlightableInput from "vue-highlightable-input"
+import HighlightableInput from "vue2-input-highlighter"
 export default {
   name: 'HelloWorld',
   components : {

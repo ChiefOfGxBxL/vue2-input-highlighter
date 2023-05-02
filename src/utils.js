@@ -79,8 +79,8 @@ export function saveSelection(containerEl) {
   }
 }
 
-// Copied but modifed slightly from: https://stackoverflow.com/questions/14636218/jquery-convert-text-url-to-link-as-typing/14637351#14637351
 export function restoreSelection(containerEl, savedSel) {
+  // Copied but modifed slightly from: https://stackoverflow.com/questions/14636218/jquery-convert-text-url-to-link-as-typing/14637351#14637351
   if (!savedSel) return
 
   if (window.getSelection && document.createRange) {
