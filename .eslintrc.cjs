@@ -28,6 +28,7 @@ module.exports = {
     "no-var": ["error"],
     "object-curly-spacing": ["error", "always"],
     "one-var-declaration-per-line": ["error", "always"],
+    "semi": ["error", "never"],
     "space-before-blocks": ["error"],
     "space-infix-ops": ["error"],
     "space-unary-ops": ["error"],

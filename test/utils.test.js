@@ -1,5 +1,10 @@
 import assert from 'assert'
-import { getRegexIndices, getIndicesOf, safeTagsReplace } from '../src/utils.js'
+import {
+  getRegexIndices,
+  getIndicesOf,
+  safeTagsReplace,
+  isRegExp
+} from '../src/utils.js'
 
 describe('Utils', () => {
   describe('#getRegexIndices()', () => {
@@ -34,6 +39,20 @@ describe('Utils', () => {
     it('should escape tags', () => {
       const result = safeTagsReplace('<html>&')
       assert.equal(result, '&lt;html&gt;&amp;')
+    })
+  })
+
+  describe('#isRegExp()', () => {
+    it('should return true when object is a RegExp', () => {
+      assert.ok(isRegExp(new RegExp('test')))
+      assert.ok(isRegExp(/test/ig))
+    })
+    it('should return false when object is not a RegExp', () => {
+      assert.ok(!isRegExp('string'))
+      assert.ok(!isRegExp(false))
+      assert.ok(!isRegExp([]))
+      assert.ok(!isRegExp(null))
+      assert.ok(!isRegExp(undefined))
     })
   })
 })
