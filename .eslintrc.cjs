@@ -4,12 +4,23 @@ module.exports = {
     browser: true,
     es6: true,
     node: true,
-    mocha: true
+    jest: true
   },
   extends: [
     'eslint:recommended',
     // 'plugin:vue/vue3-recommended',
     'plugin:vue/recommended', // Vue.js 2.x
+  ],
+  overrides: [
+    {
+      files: [
+        '**/__tests__/*.{j,t}s?(x)',
+        '**/tests/unit/**/*.spec.{j,t}s?(x)'
+      ],
+      env: {
+        jest: true
+      }
+    }
   ],
   rules: {
     "arrow-spacing": ["error", { "before": true, "after": true }],

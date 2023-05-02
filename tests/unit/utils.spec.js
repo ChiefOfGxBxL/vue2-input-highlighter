@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { getRegexIndices, getIndicesOf } from '../src/utils.js'
+import { getRegexIndices, getIndicesOf } from '../../src/utils.js'
 
 describe('Utils', () => {
   describe('#getRegexIndices()', () => {
@@ -12,8 +12,11 @@ describe('Utils', () => {
   });
 
   describe('#getIndicesOf()', () => {
-    it('should return empty array if search string is empty', () => {
+    it('should return empty array if search string or full string is empty or invalid', () => {
       assert.equal(getIndicesOf('', 'Text to search against', false).length, 0)
+      assert.equal(getIndicesOf('cat', '', false).length, 0)
+      assert.equal(getIndicesOf('test', null, false).length, 0)
+      assert.equal(getIndicesOf(null, 'Text to search against', false).length, 0)
     })
     it('should handle case-insensitive search', () => {
       assert.equal(getIndicesOf('red', 'Red string is colored red', false).length, 3)

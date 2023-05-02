@@ -38,6 +38,7 @@ export default {
     return {
       msg: '',
       highlight: [
+        {text:'box', classList: ['shape']}
         {text:'chicken', style:"background-color:#f37373"},
         {text:'noodle', style:"background-color:#fca88f"},
         {text:'soup', style:"background-color:#bbe4cb"},
@@ -57,6 +58,7 @@ export default {
 | ---      | ---   | ---      | ---       | ---               |  ---
 | highlight | **Yes**     | String or Array   | null       | The string or list of words to highlight. This can be a single string value, a RegExp or you can do an array of strings or RegExp or array of [**Highlight Objects**](https://github.com/SyedWasiHaider/vue-highlightable-input#highlight-object) or array of [**Range Objects**](https://github.com/SyedWasiHaider/vue-highlightable-input#range-object).  | Yes |
 | highlightEnabled  | No     |  Boolean   | true        | If true, will highlight the text | Yes |
+| defaultClassList  | No | Array  | []     | Applies the specified CSS classes to each highlight, if `classList` is not provided. | Yes
 | highlightStyle  | No | String or Object  | background-color:yellow     | If no style is provided for text, this will act as the global styling for the highlight. Can also be a dictionary instead of string. | Yes
 | highlightDelay  | No | Number  | 500     | Determines how long in milliseconds to wait before processing the highlights. Setting this to a low value is fine for small text but setting it higher may improve performance significantly for larger text | Yes
 | caseSensitive  | No | Boolean  | false     | If true, will treat highlight strings with case sensitivity. Can be overrided per highlight object. | Yes
@@ -68,6 +70,7 @@ export default {
 ```javascript
 {
     text:'chicken', // Required
+    classList: ['animal', 'farm'], // Optional - apply CSS classes to this highlighted token, defaulting to `defaultClassList`
     style:"background-color:#f37373" // Optional
     caseSensitive: true // Optional defaults to False
 }
@@ -78,6 +81,7 @@ export default {
 {
     start:1, // Required
     end: 9,  // Required
+    classList: ['range'], // Optional
     style:"background-color:#f37373" // Optional
 }
 ```
