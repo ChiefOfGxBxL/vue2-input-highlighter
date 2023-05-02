@@ -1,107 +1,118 @@
 <template>
-    <v-app style="margin:30px">
-      <v-container fluid>
-          <img height="160px" width="250px" src="../assets/logo.png">
+  <main class="container">
+    <!-- Hero -->
+    <section>
+      <hgroup>
+        <h1>Vue Highlightable Input</h1>
+        <h2><mark>Highlight</mark> and style specific words as you're typing.</h2>
+      </hgroup>
+      <code class='execute'>npm install --save vue-highlightable-input</code>
+      <a href="https://github.com/Vision-Zero-Reporting/vue-highlightable-input">
+        <img src="../assets/github-mark.svg" width="36" height="36" />
+        GitHub
+      </a>
+    </section>
 
-          <h3> Highlight and style specific words as you're typing. </h3>
-          
-          <highlightable-input 
-            align="left"
-            class="myinput" 
-            data-placeholder="Try typing any of the words below like hacker news or @Soup"
-            :highlight-style="defaultStyle" 
-            :highlight-enabled="highlightEnabled" 
-            :highlight="highlight" 
-            :caseSensitive="caseEnabled"
-            v-model="msg"
-          />
-          
-          <label> Raw Text: </label>
-          <br><br>
-          <label>{{msg}} </label>
-          <br><br>
+    <!-- Side-by-side highlight component -->
+    <div class="grid">
+      <div> <!-- Left -->
+        <hgroup>
+          <h4>Live demo</h4>
+          <h5>Begin typing below to see the component live in action!</h5>
+        </hgroup>
+        <highlightable-input 
+          align="left"
+          class="highlightable-input"
+          spellcheck="false"
+          data-placeholder="Try typing some text here with words from the reference sheet"
+          :highlight-style="defaultStyle"
+          :highlight-enabled="highlightEnabled"
+          :highlight="highlight"
+          :default-class-list="defaultClassList"
+          :caseSensitive="caseEnabled"
+          v-model="msg"
+        />
 
-          <button v-on:click="msg = ''">Clear Text</button>
-          <br><br>
+        <!-- Controls -->
+        <div class="grid">
+          <div>
+            <label>
+              <input type="checkbox" v-model="highlightEnabled"> Highlight
+            </label>
+          </div>
+          <div>
+            <label>
+              <input type="checkbox" v-model="caseEnabled"> Case Sensitive (Global)
+            </label>
+          </div>
+        </div>
+      </div>
+      <div style="padding-left: 10px;"> <!-- Right -->
+        <hgroup>
+          <h4>Reference</h4>
+          <h5>A reference sheet of some things you can type in this demo</h5>
+        </hgroup>
 
-          <label>
-            <input type="checkbox" v-model="highlightEnabled"> Highlight
-          </label>
-          
-          <label>
-            <input type="checkbox" v-model="caseEnabled"> Case Sensitive (Global)
-          </label>
-          <br><br>
+        <h6>Text</h6>
+        <ul>
+          <li>Food names <code>hamburger <sup title="case-sensitive">(*)</sup></code><code>pizza</code><code>taco</code></li>
+          <li>Literal <code>typo</code><code>whatever</code><code>comic-sans</code></li>
+          <li>Case-sensitive <code>CASE <sup title="case-sensitive">(*)</sup></code></li>
+        </ul>
 
-          <label> Add your own highlights (Text only but not RegExp) </label>
-          <input v-model="customHighlight"  v-on:keyup.13="handleNewHighlights"/>
-          <ul>
-              <li v-for="(h,i) in this.highlight" :key="i">
-                <span v-if="h.start && h.end">Range: <span :class="h.classList || defaultClassList" :style="h.style || defaultStyle">{{h.text || h}} </span> </span>
-                <span v-else>Text: <span :class="h.classList || defaultClassList" :style="h.style || defaultStyle">{{(h.text || h).toString()}}</span> </span>
-              </li>
-          </ul>
+        <h6>Patterns</h6>
+        <ul>
+          <li>Phone numbers <code>555-555-1234</code></li>
+          <li>Hash tags <code>#example</code></li>
+        </ul>
 
-          <h3> Install </h3>
-          <p class="npminstall"> npm install --save vue-highlightable-input </p>
+        <hgroup>
+          <h6>Ranges</h6>
+          <h6>These will highlight based on start and end indices</h6>
+        </hgroup>
+        <ul>
+          <li>Range <code>1-5</code></li>
+          <li>Range <code>15-30</code></li>
+        </ul>
+      </div>
+    </div>
 
-          <h3> Source </h3>
-          <a class="npminstall" href="https://github.com/SyedWasiHaider/vue-highlightable-input">https://github.com/SyedWasiHaider/vue-highlightable-input</a>
-
-          <h3> Icons </h3>
-          <p>Icons provided for free by <a href="https://icons8.com/" target="_blank">Icons8</a></p>
-      </v-container>
-    </v-app>
+    <!-- Footer -->
+    <footer>
+      <hr />
+      Icons provided for free by <a href="https://icons8.com/" target="_blank">Icons8</a>
+    </footer>
+  </main>
 </template>
 
 <script>
 import HighlightableInput from "../../../src/HighlightableInput"
-import Vuetify from 'vuetify'
-import Vue from 'vue'
-Vue.use(Vuetify)
 
 export default {
   name: 'HelloWorld',
-  components : {
+  components: {
     HighlightableInput
   },
   data() {
     return {
-      msg: 'When we go out to restaurants (#restaurant-life) together, we like to order tasty food. I order a hamburger, and they order pizza and taccos. Whoops, we made a typo (and typo is always underlined!). I meant to type tacos. Also, the word Hamburger is CASEsensitive, so HAMBURGER will not trigger the styling. Pizza is good for parties. #goodfood #parties #latenight',
+      msg: 'When we go out to restaurants (#restaurant-life) together, we like to order tasty food. I order a hamburger, and they order pizza and taccos. Whoops, we made a typo (and typo is always underlined!). I meant to type tacos in comic-sans. Also, the word Hamburger is CASEsensitive case, so HAMBURGER will not trigger the styling. Pizza is good for parties. We eat whatever we want. RSVP 555-555-5555! #goodfood #parties #latenight',
       defaultClassList: [],
-      defaultStyle: { 'background-color' : 'gray', 'color' : 'white' },
+      defaultStyle: { 'font-style': 'italic' },
       highlight: [
         { text: 'hamburger', classList: ['icon', 'hamburger'], caseSensitive: true },
         { text: 'pizza', classList: ['icon', 'pizza'] },
         { text: 'taco', classList: ['icon', 'taco'] },
-        { text: 'typo', style: "border-bottom: 2px SOLID red" },
-        {text:'hacker news', style:"background-color:#ff6600"},
-        {text:'CASEsensitive', style:"background-color:#fca88f", caseSensitive: true},
-        {text:'@Soup', style:"background-color:#bbe4cb"},
-        {text:'comic-sans', style:"font-family:comic-sans"},
-        {text:'bold', style:"font-weight: bold;"},
+        { text: 'typo', style: "border-bottom: 2px dotted red" },
+        { text:'CASE', style: "background-color: #fca88f", caseSensitive: true },
+        { text:'comic-sans', style: "font-family: comic-sans" },
         "whatever",
-        {start:0, end:1, style:"border: 3px solid #AAAD21;"},
-        {start:3, end:5, style:"border: 2px solid #73AD21;"},
-        {text: /[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}/img, style:"color: white; background-color:#aa2313"}, // Phone number regex
-        { text: /#[\w-]+/ig, style: "font-size:0.7em; border:1px SOLID #000; padding:1px; background-color:white;"}, // Hash tag
-        { text: /{{\w+}}/gm, style: 'color: green;' },
-        { text: /{{.*?}}/gm, style: 'color: red' },
-        { text: /{{\w+/gm, style: 'color: green' },
+        { start: 1, end: 5, style: "background-color: #fff2ca;" },
+        { start: 15, end: 30, style: "background-color: #60c167;" },
+        { text: /[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}/img, style: "font-weight: bold; background-color: #a9d5f2;" }, // Phone number
+        { text: /#[\w-]+/ig, style: "font-size: 0.7em; border: 1px SOLID #000; padding:1px; background-color: white;"}, // Hash tag
       ],
       highlightEnabled: true,
-      caseEnabled: false,
-      customHighlight:''
-    }
-  },
-  methods: {
-    handleNewHighlights () {
-        // Ugly hack because chrome is stupid 
-        // https://stackoverflow.com/questions/26962323/what-is-this-insane-space-character-google-chrome
-        var h = this.customHighlight.replace(new RegExp(String.fromCharCode(32),"g"),String.fromCharCode(160));
-        if (h.length > 0)
-          this.highlight.unshift(h)
-        this.customHighlight = ""
+      caseEnabled: false
     }
   }
 }
@@ -109,47 +120,38 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-
-li {
-  text-align: left;
-  margin-top: 5px;
-}
+h6, li { text-align: left; margin-bottom: 4px; }
 
 a {
   color: #42b983;
+  text-decoration: underline;
 }
 
-.myinput {
-  height: 40px;
-  width: auto;
-  margin: 30px;
-  background-color: #e2e1ee;
+code { margin-right: 20px; }
+code.execute::before {
+  content: '>';
+  padding-right: 8px;
+  font-size: 0.8em;
+}
+
+footer {
+  color: #999;
+  text-transform: uppercase;
+  font-size: 0.7em;
+  margin-top: 60px;
+}
+
+.highlightable-input {
+  height: auto;
   padding: 20px;
+  border: 1px SOLID #ddd;
+  border-radius: 4px;
 }
 
-.npminstall {
-  margin-left: 40px;
-  margin-right: 40px;
-  background-color: black;
-  background-color: #f2f1fe;
-  width: auto;
-}
-
-[data-placeholder]:empty:before{
+[data-placeholder]:empty:before {
   content: attr(data-placeholder);
   color: #888;
   font-style: italic;
-}
-
-#container {
-  width: 640px;
-  height: auto;
-  margin: 0 auto;
-  padding: 10px;
-  position: relative;
 }
 </style>
 
@@ -157,17 +159,11 @@ a {
 .icon {
   background-size: contain;
   background-repeat: no-repeat;
-  padding: 2px 2px 2px 25px;
+  padding: 2px 2px 2px 28px;
   border: 1px SOLID #000;
   border-radius: 4px;
 }
-.hamburger {
-  background-image: url('../assets/icons8-hamburger-30.png');
-}
-.pizza {
-  background-image: url('../assets/icons8-pizza-30.png');
-}
-.taco {
-  background-image: url('../assets/icons8-taco-30.png');
-}
+.hamburger { background-image: url('../assets/icons8-hamburger-30.png'); }
+.pizza { background-image: url('../assets/icons8-pizza-30.png'); }
+.taco { background-image: url('../assets/icons8-taco-30.png'); }
 </style>
