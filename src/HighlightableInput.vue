@@ -153,7 +153,7 @@ export default {
         }
       }
 
-      const highlightPositions = intervalTree.search(0, this.internalValue.length).sort((a,b) => a.start - b.start)
+      const highlightPositions = intervalTree.search(0, this.internalValue.length).sort((a, b) => a.start - b.start)
 
       // Construct the output with styled spans around the highlight text
       let result = ''
@@ -221,7 +221,7 @@ export default {
               caseSensitive: h.caseSensitive
             }
           }
-        }).sort((a,b) => (a.text && b.text) ? a.text > b.text : ((a.start === b.start ? (a.end < b.end) : (a.start < b.start)))).concat(regExpHighlights)
+        }).sort((a, b) => (a.text && b.text) ? a.text > b.text : ((a.start === b.start ? (a.end < b.end) : (a.start < b.start)))).concat(regExpHighlights)
         // We sort here in ascending order because we want to find highlights for the smaller strings first
         // and then override them later with any overlapping larger strings. So for example:
         // if we have highlights: g and gg and the string "sup gg" should have only "gg" highlighted.

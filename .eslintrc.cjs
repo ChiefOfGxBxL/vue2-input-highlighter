@@ -15,6 +15,7 @@ module.exports = {
     "arrow-spacing": ["error", { "before": true, "after": true }],
     "brace-style": ["error"],
     "camelcase": ["error"],
+    "comma-spacing": ["error", { "before": false, "after": true }],
     "curly": ["error", "multi-line", "consistent"],
     "dot-notation": ["error"],
     "eqeqeq": ["warn", "always", {"null": "ignore"}],
