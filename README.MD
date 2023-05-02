@@ -1,32 +1,26 @@
-![icon](https://github.com/SyedWasiHaider/vue-highlightable-input/blob/master/doc/icon.png)
-[![npm version](https://badge.fury.io/js/vue-highlightable-input.svg)](https://badge.fury.io/js/vue-highlightable-input)
-
 # Vue Highlightable Input
-Highlight and style specific words as you're typing. 
-
-![alt demo](https://github.com/SyedWasiHaider/vue-highlightable-input/blob/master/doc/demo.gif)
-[Try it yourself](https://vue-highlightable-input.surge.sh/)
+Highlight and style specific words as you're typing.
 
 # Install
 
 ```sh
-npm install vue-highlightable-input --save
+npm install --save vue-highlightable-input
 ```
 
 # Usage
 
-#### In your template add this:
+#### In `<template>`:
 
 ```html
 <highlightable-input 
   highlight-style="background-color:yellow" 
   :highlight-enabled="highlightEnabled" 
   :highlight="highlight" 
-  v-model="msg"
+  v-model="text"
 />
 ```
 
-#### In your component add this:
+#### In your component code:
 ```javascript
 import HighlightableInput from "vue-highlightable-input"
 export default {
@@ -36,15 +30,15 @@ export default {
   },
   data() {
     return {
-      msg: '',
+      text: '',
       highlight: [
-        {text:'box', classList: ['shape']},
-        {text:'chicken', style:"background-color:#f37373"},
-        {text:'noodle', style:"background-color:#fca88f"},
-        {text:'soup', style:"background-color:#bbe4cb"},
-        {text:'so', style:"background-color:#fff05e"},
+        { text: 'box', classList: ['shape'] },
+        { text: 'chicken', style: "background-color: #f37373" },
+        { text: 'noodle', style: "background-color: #fca88f" },
+        { text: 'soup', style: "background-color: #bbe4cb" },
+        { text: 'so', style: "background-color: #fff05e" },
         "whatever",
-        {start: 2, end: 5, style:"background-color:#f330ff"}
+        { start: 2, end: 5, style: "background-color: #f330ff" }
       ],
       highlightEnabled: true
     }
@@ -69,9 +63,9 @@ export default {
 #### Highlight Object
 ```javascript
 {
-    text:'chicken', // Required
+    text: 'chicken', // Required
     classList: ['animal', 'farm'], // Optional - apply CSS classes to this highlighted token, defaulting to `defaultClassList`
-    style:"background-color:#f37373" // Optional
+    style: "background-color: #f37373" // Optional
     caseSensitive: true // Optional defaults to False
 }
 ```
@@ -79,10 +73,10 @@ export default {
 #### Range Object
 ```javascript
 {
-    start:1, // Required
+    start: 1, // Required
     end: 9,  // Required
     classList: ['range'], // Optional
-    style:"background-color:#f37373" // Optional
+    style: "background-color: #f37373" // Optional
 }
 ```
 End must be greater than start. 
@@ -96,25 +90,11 @@ The range end is exlusive in other words ==> [start, end)
 
 Note, that you can also use `v-model`
 
-### Some notes
+### Performance
+This component is not designed for large scale text highlighting.
 
-* This is not meant to be used for large scale text highlight because of how inefficient div contentEditable is and also the fact the algorithm I'm using is stupidly inefficient (try entering like a lot of text for highlighting)
-* Good use cases for this are something like what wit.ai does (they probably have a more efficient algorithm though) for highlighting recognized entities on the fly.
-* Let me know what other use cases you might have!
+## Credits
+This project is forked from [SyedWasiHaider/vue-highlightable-input](https://github.com/SyedWasiHaider/vue-highlightable-input).
 
-### Why make this?
-
-* I liked the way [wit.ai](https://wit.ai/docs/recipes) does highlighting and I wanted to recreate that in Vue.
-* Because I was bored and also had a similar problem at work (No, I wasn't bored at work! Quite the opposite actually.)
-* Because I still know nothing about web development and I'm still a n00b. Roast me bro.
-* Because it looks cool!
-
-### Credits
-
-For the cool highlighter pen icon:
-Icons made by [Freepik](http://www.freepik.com) from [Flaticon](https://www.flaticon.com/) is licensed by [Creative Commons BY 3.0](http://creativecommons.org/licenses/by/3.0/) 
-
-License
-----
-
+## License
 MIT
