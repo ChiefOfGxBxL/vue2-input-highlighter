@@ -55,4 +55,12 @@ describe('Utils', () => {
       assert.ok(!isRegExp(undefined))
     })
   })
+
+  describe('#saveSelection()', () => {
+    it('should save selection')
+  })
+
+  describe('#restoreSelection()', () => {
+    it('should restore selection')
+  })
 })
