@@ -139,16 +139,12 @@ export default {
               const end = start + highlightObj.text.length - 1
               this.insertRange(start, end, highlightObj, intervalTree)
             })
-          }
-
-          if (isRegExp(highlightObj.text)) {
+          } else if (isRegExp(highlightObj.text)) {
             getRegexIndices(highlightObj.text, this.internalValue).forEach(pair => {
               this.insertRange(pair.start, pair.end, highlightObj, intervalTree)
             })
           }
-        }
-
-        if (highlightObj.start != undefined && highlightObj.end != undefined && highlightObj.start < highlightObj.end) {
+        } else if (highlightObj.start != undefined && highlightObj.end != undefined && highlightObj.start < highlightObj.end) {
           this.insertRange(highlightObj.start, highlightObj.end - 1, highlightObj, intervalTree)
         }
       }
