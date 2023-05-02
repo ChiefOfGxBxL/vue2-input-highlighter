@@ -130,7 +130,7 @@ export default {
 
       for (const highlightObj of sortedHighlights) {
         if (highlightObj.text) {
-          if (typeof highlightObj.text === "string") {
+          if (typeof highlightObj.text === 'string') {
             getIndicesOf(
               highlightObj.text,
               this.internalValue,
@@ -190,7 +190,7 @@ export default {
     normalizedHighlights () {
       if (this.highlight == null) return null
 
-      if (isRegExp(this.highlight) || typeof this.highlight === "string") {
+      if (isRegExp(this.highlight) || typeof this.highlight === 'string') {
         return [{ text: this.highlight }]
       }
 
@@ -201,7 +201,7 @@ export default {
         const regExpHighlights = this.highlight.filter(isRegExp)
         const nonRegExpHighlights = this.highlight.filter(x => !isRegExp(x))
         return nonRegExpHighlights.map(h => {
-          if (h.text || typeof h === "string") {
+          if (h.text || typeof h === 'string') {
             return {
               text: h.text || h,
               style: h.style || globalDefaultStyle,
@@ -248,7 +248,7 @@ export default {
         let selectedTextRange = document.selection.createRange()
         let preSelectionTextRange = document.body.createTextRange()
         preSelectionTextRange.moveToElementText(containerEl)
-        preSelectionTextRange.setEndPoint("EndToStart", selectedTextRange)
+        preSelectionTextRange.setEndPoint('EndToStart', selectedTextRange)
         start = preSelectionTextRange.text.length
 
         return {
@@ -300,8 +300,8 @@ export default {
         let textRange = document.body.createTextRange()
         textRange.moveToElementText(containerEl)
         textRange.collapse(true)
-        textRange.moveEnd("character", savedSel.end)
-        textRange.moveStart("character", savedSel.start)
+        textRange.moveEnd('character', savedSel.end)
+        textRange.moveStart('character', savedSel.start)
         textRange.select()
       }
     }
