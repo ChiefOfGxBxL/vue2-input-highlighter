@@ -16,8 +16,8 @@ export function getRegexIndices(regex, str) {
   return indices;
 }
 
-// https://stackoverflow.com/questions/3410464/how-to-find-indices-of-all-occurrences-of-one-string-in-another-in-javascript
 export function getIndicesOf(searchStr, str, caseSensitive = false) {
+  // Source: https://stackoverflow.com/questions/3410464/how-to-find-indices-of-all-occurrences-of-one-string-in-another-in-javascript
   if (!searchStr || !str) return []
   let searchStrLen = searchStr.length;
 
@@ -33,4 +33,15 @@ export function getIndicesOf(searchStr, str, caseSensitive = false) {
     startIndex = index + searchStrLen;
   }
   return indices;
+}
+
+export function safeTagsReplace(str) {
+  // Source: https://stackoverflow.com/questions/5499078/fastest-method-to-escape-html-tags-as-html-entities
+  const tagsToReplace = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;'
+  }
+  const replaceTag = (tag) => tagsToReplace[tag] || tag
+  return str.replace(/[&<>]/g, replaceTag)
 }

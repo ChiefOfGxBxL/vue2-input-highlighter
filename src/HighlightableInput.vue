@@ -7,13 +7,7 @@ import IntervalTree from 'node-interval-tree'
 import debounce from 'lodash/debounce'
 import isUndefined from 'lodash/isUndefined'
 
-import { getRegexIndices, getIndicesOf } from './utils'
-
-const tagsToReplace = {
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;'
-};
+import { getRegexIndices, getIndicesOf, safeTagsReplace } from './utils'
 
 export default {
   name: 'HighlightableInput',
@@ -166,14 +160,14 @@ export default {
       let startingPosition = 0
       for (let k = 0; k < highlightPositions.length; k++) {
         let position = highlightPositions[k]
-        result += this.safeTagsReplace(this.internalValue.substring(startingPosition, position.start))
-        result += "<span class='" + highlightPositions[k].classList.join(' ') + "' style='" + highlightPositions[k].style + "'>" + this.safeTagsReplace(this.internalValue.substring(position.start, position.end + 1)) + "</span>"
+        result += safeTagsReplace(this.internalValue.substring(startingPosition, position.start))
+        result += "<span class='" + highlightPositions[k].classList.join(' ') + "' style='" + highlightPositions[k].style + "'>" + safeTagsReplace(this.internalValue.substring(position.start, position.end + 1)) + "</span>"
         startingPosition = position.end + 1
       }
 
       // In case we exited the loop early
       if (startingPosition < this.internalValue.length) {
-        result += this.safeTagsReplace(this.internalValue.substring(startingPosition, this.internalValue.length))
+        result += safeTagsReplace(this.internalValue.substring(startingPosition, this.internalValue.length))
       }
 
       // Stupid firefox bug
@@ -245,15 +239,6 @@ export default {
 
       console.error("Expected a string or an array of strings")
       return null
-    },
-
-    // Copied from: https://stackoverflow.com/questions/5499078/fastest-method-to-escape-html-tags-as-html-entities
-    safeTagsReplace(str) {
-      return str.replace(/[&<>]/g, this.replaceTag);
-    },
-
-    replaceTag(tag) {
-      return tagsToReplace[tag] || tag;
     },
 
     // Copied but modifed slightly from: https://stackoverflow.com/questions/14636218/jquery-convert-text-url-to-link-as-typing/14637351#14637351
