@@ -7,13 +7,14 @@ import IntervalTree from 'node-interval-tree'
 import debounce from 'lodash/debounce'
 import isUndefined from 'lodash/isUndefined'
 
-import { getRegexIndices, getIndicesOf } from './utils'
-
-const tagsToReplace = {
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;'
-};
+import {
+  getRegexIndices,
+  getIndicesOf,
+  safeTagsReplace,
+  isRegExp,
+  saveSelection,
+  restoreSelection
+} from './utils'
 
 export default {
   name: 'HighlightableInput',
@@ -75,7 +76,7 @@ export default {
     },
 
     value() {
-      if (this.internalValue != this.value) {
+      if (this.internalValue !== this.value) {
         this.internalValue = this.value
         this.processHighlights()
       }
@@ -86,13 +87,13 @@ export default {
     },
 
     caseSensitive () {
-      this.processHighlights();
+      this.processHighlights()
     },
 
     htmlOutput() {
-      const selection = this.saveSelection(this.$el)
+      const selection = saveSelection(this.$el)
       this.$el.innerHTML = this.htmlOutput
-      this.restoreSelection(this.$el, selection)
+      restoreSelection(this.$el, selection)
     }
   },
 
@@ -107,77 +108,67 @@ export default {
   methods: {
 
     handleChange() {
-      this.debouncedHandler = debounce(function() {
+      this.debouncedHandler = debounce(() => {
         if (this.internalValue !== this.$el.textContent) {
           this.internalValue = this.$el.textContent
-          this.processHighlights();
+          this.processHighlights()
         }
       }, this.highlightDelay)
-      this.debouncedHandler();
+      this.debouncedHandler()
     },
 
     processHighlights() {
       if (!this.highlightEnabled) {
-        this.htmlOutput = this.internalValue;
+        this.htmlOutput = this.internalValue
         this.$emit('input', this.internalValue)
-        return;
+        return
       }
 
-      let intervalTree = new IntervalTree()
+      const intervalTree = new IntervalTree()
+
       // Find the position ranges of the text to highlight
-      let highlightPositions = []
-      let sortedHighlights = this.normalizedHighlights();
-      if (!sortedHighlights) return;
+      let sortedHighlights = this.normalizedHighlights()
+      if (!sortedHighlights) return
 
-      for (let i = 0; i < sortedHighlights.length; i++) {
-        let highlightObj = sortedHighlights[i]
-
-        let indices = []
+      for (const highlightObj of sortedHighlights) {
         if (highlightObj.text) {
-          if (typeof highlightObj.text == "string") {
-            indices = getIndicesOf(highlightObj.text, this.internalValue, isUndefined(highlightObj.caseSensitive) ? this.caseSensitive : highlightObj.caseSensitive)
-            indices.forEach(start => {
-              let end = start + highlightObj.text.length - 1;
+          if (typeof highlightObj.text === 'string') {
+            getIndicesOf(
+              highlightObj.text,
+              this.internalValue,
+              isUndefined(highlightObj.caseSensitive) ? this.caseSensitive : highlightObj.caseSensitive
+            ).forEach(start => {
+              const end = start + highlightObj.text.length - 1
               this.insertRange(start, end, highlightObj, intervalTree)
             })
-          }
-
-          if (Object.prototype.toString.call(highlightObj.text) === '[object RegExp]') {
-            indices = getRegexIndices(highlightObj.text, this.internalValue)
-            indices.forEach(pair => {
+          } else if (isRegExp(highlightObj.text)) {
+            getRegexIndices(highlightObj.text, this.internalValue).forEach(pair => {
               this.insertRange(pair.start, pair.end, highlightObj, intervalTree)
             })
           }
-        }
-
-
-        if (highlightObj.start != undefined && highlightObj.end != undefined && highlightObj.start < highlightObj.end) {
-          let start = highlightObj.start;
-          let end = highlightObj.end - 1;
-          this.insertRange(start, end, highlightObj, intervalTree)
+        } else if (highlightObj.start != undefined && highlightObj.end != undefined && highlightObj.start < highlightObj.end) {
+          this.insertRange(highlightObj.start, highlightObj.end - 1, highlightObj, intervalTree)
         }
       }
 
-      highlightPositions = intervalTree.search(0, this.internalValue.length)
-      highlightPositions = highlightPositions.sort((a,b) => a.start - b.start)
+      const highlightPositions = intervalTree.search(0, this.internalValue.length).sort((a, b) => a.start - b.start)
 
       // Construct the output with styled spans around the highlight text
       let result = ''
       let startingPosition = 0
-      for (let k = 0; k < highlightPositions.length; k++) {
-        let position = highlightPositions[k]
-        result += this.safeTagsReplace(this.internalValue.substring(startingPosition, position.start))
-        result += "<span class='" + highlightPositions[k].classList.join(' ') + "' style='" + highlightPositions[k].style + "'>" + this.safeTagsReplace(this.internalValue.substring(position.start, position.end + 1)) + "</span>"
+      for (const position of highlightPositions) {
+        result += safeTagsReplace(this.internalValue.substring(startingPosition, position.start))
+        result += `<span class='${position.classList.join(' ')}' style='${position.style}'>${safeTagsReplace(this.internalValue.substring(position.start, position.end + 1))}</span>`
         startingPosition = position.end + 1
       }
 
       // In case we exited the loop early
       if (startingPosition < this.internalValue.length) {
-        result += this.safeTagsReplace(this.internalValue.substring(startingPosition, this.internalValue.length))
+        result += safeTagsReplace(this.internalValue.substring(startingPosition, this.internalValue.length))
       }
 
-      // Stupid firefox bug
-      if (result[result.length - 1] == ' ') {
+      // Firefox bug
+      if (result[result.length - 1] === ' ') {
         result = result.substring(0, result.length - 1)
         result += '&nbsp;'
       }
@@ -187,38 +178,32 @@ export default {
     },
 
     insertRange(start, end, highlightObj, intervalTree) {
-      let overlap = intervalTree.search(start, end);
-      let maxLengthOverlap = overlap.reduce((max, o) => {
-        return Math.max(o.end - o.start, max)
-      }, 0)
-      if (overlap.length == 0) {
+      const overlap = intervalTree.search(start, end)
+      const maxLengthOverlap = overlap.reduce((max, o) => Math.max(o.end - o.start, max), 0)
+
+      if (overlap.length === 0) {
         intervalTree.insert(start, end, { start: start, end: end, style: highlightObj.style, classList: highlightObj.classList } )
       } else if ((end - start) > maxLengthOverlap) {
-        overlap.forEach(o => {
-          intervalTree.remove(o.start, o.end, o)
-        })
+        overlap.forEach(o => intervalTree.remove(o.start, o.end, o))
         intervalTree.insert(start, end, { start: start, end: end, style: highlightObj.style, classList: highlightObj.classList } )
       }
     },
 
     normalizedHighlights () {
-      if (this.highlight == null) {
-        return null;
-      }
+      if (this.highlight == null) return null
 
-      if (Object.prototype.toString.call(this.highlight) === '[object RegExp]' || typeof this.highlight == "string") {
+      if (isRegExp(this.highlight) || typeof this.highlight === 'string') {
         return [{ text: this.highlight }]
       }
 
-      if (Object.prototype.toString.call(this.highlight) === '[object Array]' && this.highlight.length > 0) {
-
-        const globalDefaultStyle = typeof this.highlightStyle == 'string' ? this.highlightStyle : (Object.keys(this.highlightStyle).map(key => key + ':' + this.highlightStyle[key]).join(';') + ';')
+      if (Array.isArray(this.highlight) && this.highlight.length > 0) {
+        const globalDefaultStyle = typeof this.highlightStyle === 'string' ? this.highlightStyle : (Object.keys(this.highlightStyle).map(key => key + ':' + this.highlightStyle[key]).join(';') + ';')
         const globalDefaultClassList = this.defaultClassList
 
-        const regExpHighlights = this.highlight.filter(x => x == Object.prototype.toString.call(x) === '[object RegExp]')
-        const nonRegExpHighlights = this.highlight.filter(x => x == Object.prototype.toString.call(x) !== '[object RegExp]')
+        const regExpHighlights = this.highlight.filter(isRegExp)
+        const nonRegExpHighlights = this.highlight.filter(x => !isRegExp(x))
         return nonRegExpHighlights.map(h => {
-          if (h.text || typeof h == "string") {
+          if (h.text || typeof h === 'string') {
             return {
               text: h.text || h,
               style: h.style || globalDefaultStyle,
@@ -233,115 +218,24 @@ export default {
               end: h.end,
               caseSensitive: h.caseSensitive
             }
-          } else {
-            console.error("Please provide a valid highlight object or string")
           }
-        }).sort((a,b) => (a.text && b.text) ? a.text > b.text : ((a.start == b.start ? (a.end < b.end) : (a.start < b.start)))).concat(regExpHighlights)
+        }).sort((a, b) => (a.text && b.text) ? a.text > b.text : ((a.start === b.start ? (a.end < b.end) : (a.start < b.start)))).concat(regExpHighlights)
         // We sort here in ascending order because we want to find highlights for the smaller strings first
         // and then override them later with any overlapping larger strings. So for example:
         // if we have highlights: g and gg and the string "sup gg" should have only "gg" highlighted.
         // RegExp highlights are not sorted and simply concated (this could be done better  in the future)
       }
 
-      console.error("Expected a string or an array of strings")
       return null
-    },
-
-    // Copied from: https://stackoverflow.com/questions/5499078/fastest-method-to-escape-html-tags-as-html-entities
-    safeTagsReplace(str) {
-      return str.replace(/[&<>]/g, this.replaceTag);
-    },
-
-    replaceTag(tag) {
-      return tagsToReplace[tag] || tag;
-    },
-
-    // Copied but modifed slightly from: https://stackoverflow.com/questions/14636218/jquery-convert-text-url-to-link-as-typing/14637351#14637351
-    saveSelection(containerEl) {
-      let start;
-      if (window.getSelection && document.createRange) {
-        let selection = window.getSelection()
-        if (!selection || selection.rangeCount == 0) return
-
-        let range = selection.getRangeAt(0);
-        let preSelectionRange = range.cloneRange();
-        preSelectionRange.selectNodeContents(containerEl);
-        preSelectionRange.setEnd(range.startContainer, range.startOffset);
-        start = preSelectionRange.toString().length;
-
-        return {
-          start: start,
-          end: start + range.toString().length
-        }
-      } else if (document.selection) {
-        let selectedTextRange = document.selection.createRange();
-        let preSelectionTextRange = document.body.createTextRange();
-        preSelectionTextRange.moveToElementText(containerEl);
-        preSelectionTextRange.setEndPoint("EndToStart", selectedTextRange);
-        start = preSelectionTextRange.text.length;
-
-        return {
-          start: start,
-          end: start + selectedTextRange.text.length
-        }
-      }
-    },
-
-    // Copied but modifed slightly from: https://stackoverflow.com/questions/14636218/jquery-convert-text-url-to-link-as-typing/14637351#14637351
-    restoreSelection(containerEl, savedSel) {
-      if (!savedSel) return
-
-      if (window.getSelection && document.createRange) {
-        let charIndex = 0,
-          range = document.createRange();
-        range.setStart(containerEl, 0);
-        range.collapse(true);
-
-        let nodeStack = [containerEl],
-          node,
-          foundStart = false,
-          stop = false;
-
-        while (!stop && (node = nodeStack.pop())) {
-          if (node.nodeType == 3) {
-            let nextCharIndex = charIndex + node.length;
-            if (!foundStart && savedSel.start >= charIndex && savedSel.start <= nextCharIndex) {
-              range.setStart(node, savedSel.start - charIndex);
-              foundStart = true;
-            }
-            if (foundStart && savedSel.end >= charIndex && savedSel.end <= nextCharIndex) {
-              range.setEnd(node, savedSel.end - charIndex);
-              stop = true;
-            }
-            charIndex = nextCharIndex;
-          } else {
-            let i = node.childNodes.length;
-            while (i--) {
-              nodeStack.push(node.childNodes[i]);
-            }
-          }
-        }
-
-        let sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-      } else if (document.selection) {
-        let textRange = document.body.createTextRange();
-        textRange.moveToElementText(containerEl);
-        textRange.collapse(true);
-        textRange.moveEnd("character", savedSel.end);
-        textRange.moveStart("character", savedSel.start);
-        textRange.select();
-      }
     }
+
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 div {
   height: 50px;
+  cursor: text;
 }
-
 </style>

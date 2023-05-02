@@ -1,9 +1,12 @@
 {
     "name": "vue-highlightable-input",
-    "version": "1.0.9",
+    "version": "1.0.0",
     "type": "module",
     "description": "A Vue.js component that highlights text as you type",
     "main": "./dist/vue-highlightable-input.js",
+    "engines": {
+        "node": ">= 14.0.0"
+    },
     "files": [
         "dist/"
     ],
@@ -12,11 +15,11 @@
         "lint": "eslint --ext .js,.vue src test",
         "test": "mocha"
     },
-    "author": "Wasi Haider",
+    "author": "chiefofgxbxl",
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/SyedWasiHaider/VueHighlightInput.git"
+        "url": "https://github.com/Vision-Zero-Reporting/vue-highlightable-input.git"
     },
     "devDependencies": {
         "@vue/cli-plugin-eslint": "^5.0.8",
