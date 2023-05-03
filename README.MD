@@ -84,9 +84,10 @@ export default {
 
 ### Events
 
-| Name       | Description
-| ---        | ---      |
-| @input     | Just like a regular input html element you can use this to react to input events
+| Name       | Description | Payload |
+| ---        | ---         | ---     |
+| @input     | Emits when user types text | `str` |
+| @onHighlight | Provides details on which text ranges were stylized | `array` - `[{ start, end, classList, style, text }]`
 
 ### Performance
 This component is not designed for large scale text highlighting.
