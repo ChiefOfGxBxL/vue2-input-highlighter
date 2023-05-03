@@ -1,6 +1,6 @@
 {
     "name": "vue2-input-highlighter",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "type": "module",
     "description": "A Vue.js component that highlights text as you type",
     "main": "./dist/vue2-input-highlighter.js",
@@ -19,7 +19,7 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/Vision-Zero-Reporting/vue2-input-highlighter.git"
+        "url": "https://github.com/ChiefOfGxBxL/vue2-input-highlighter.git"
     },
     "devDependencies": {
         "@vue/cli-plugin-eslint": "^5.0.8",
