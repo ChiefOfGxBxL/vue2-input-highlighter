@@ -31,6 +31,8 @@
           :default-class-list="defaultClassList"
           :caseSensitive="caseEnabled"
           v-model="msg"
+          @input="onInput"
+          @onHighlight="onHighlight"
         />
 
         <!-- Controls -->
@@ -113,6 +115,14 @@ export default {
       ],
       highlightEnabled: true,
       caseEnabled: false
+    }
+  },
+  methods: {
+    onInput(str) {
+      console.log(str)
+    },
+    onHighlight(highlights) {
+      console.log(highlights)
     }
   }
 }
