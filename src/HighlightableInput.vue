@@ -156,9 +156,10 @@ export default {
       // Construct the output with styled spans around the highlight text
       let result = ''
       let startingPosition = 0
-      for (const position of highlightPositions) {
+      for (let position of highlightPositions) {
         result += safeTagsReplace(this.internalValue.substring(startingPosition, position.start))
-        result += `<span class='${position.classList.join(' ')}' style='${position.style}'>${safeTagsReplace(this.internalValue.substring(position.start, position.end + 1))}</span>`
+        position.text = this.internalValue.substring(position.start, position.end + 1) // annotate the raw text that was highlighted for onHighlight event
+        result += `<span class='${position.classList.join(' ')}' style='${position.style}'>${safeTagsReplace(position.text)}</span>`
         startingPosition = position.end + 1
       }
 
@@ -175,6 +176,7 @@ export default {
 
       this.htmlOutput = result
       this.$emit('input', this.internalValue)
+      this.$emit('onHighlight', highlightPositions)
     },
 
     insertRange(start, end, highlightObj, intervalTree) {
