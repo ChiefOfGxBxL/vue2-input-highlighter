@@ -1,10 +1,13 @@
 # 1.2.0 (2023-05-__)
 ## SUMMARY
-**🔥 Breaking changes**
+
+
 ## FEATURES
 ## FIXES
 ## MAINTENANCE
 ## TESTING
+## MISCELLANEOUS
+ * Component now renders the highlighted text using DOM, with non-highlighted text being represented as plain text nodes
 
 # 1.1.0 (2023-05-03)
 ## SUMMARY
@@ -29,6 +32,7 @@ This release adds a new event `onHighlight` and updates outdated dependencies.
 ## FIXES
 ## MAINTENANCE
 ## TESTING
+## MISCELLANEOUS
 -->
 
 # Previous versions
