@@ -2,7 +2,6 @@ import assert from 'assert'
 import {
   getRegexIndices,
   getIndicesOf,
-  safeTagsReplace,
   isRegExp
 } from '../src/utils.js'
 
@@ -32,13 +31,6 @@ describe('Utils', () => {
       const result = getIndicesOf('red', 'Red string is colored red', true)
       assert.equal(result.length, 2)
       assert.deepStrictEqual(result, [18, 22])
-    })
-  })
-
-  describe('#safeTagsReplace()', () => {
-    it('should escape tags', () => {
-      const result = safeTagsReplace('<html>&')
-      assert.equal(result, '&lt;html&gt;&amp;')
     })
   })
 

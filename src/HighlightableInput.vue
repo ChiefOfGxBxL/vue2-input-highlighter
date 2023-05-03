@@ -10,7 +10,6 @@ import isUndefined from 'lodash/isUndefined'
 import {
   getRegexIndices,
   getIndicesOf,
-  safeTagsReplace,
   isRegExp,
   saveSelection,
   restoreSelection
@@ -61,7 +60,7 @@ export default {
   data() {
     return {
       internalValue: '',
-      htmlOutput: '',
+      nodes: [],
       debouncedHandler: null
     }
   },
@@ -90,9 +89,12 @@ export default {
       this.processHighlights()
     },
 
-    htmlOutput() {
+    nodes() {
       const selection = saveSelection(this.$el)
-      this.$el.innerHTML = this.htmlOutput
+      this.$el.innerHTML = ''
+      for (const node of this.nodes) {
+        this.$el.appendChild(node)
+      }
       restoreSelection(this.$el, selection)
     }
   },
@@ -107,6 +109,16 @@ export default {
 
   methods: {
 
+    createNode(isToken = false, content = '', classList, style) {
+      const el = isToken ? document.createElement('span') : document.createTextNode(content)
+      if (isToken) {
+        el.textContent = content // faster than `.innerText` and `.createTextNode`
+        if (classList && classList.length) el.classList.add(...classList)
+        if (style && style.length) el.style = style
+      }
+      return el
+    },
+
     handleChange() {
       this.debouncedHandler = debounce(() => {
         if (this.internalValue !== this.$el.textContent) {
@@ -119,7 +131,7 @@ export default {
 
     processHighlights() {
       if (!this.highlightEnabled) {
-        this.htmlOutput = this.internalValue
+        this.nodes = [this.createNode(false, this.internalValue)] // render a plain token
         this.$emit('input', this.internalValue)
         return
       }
@@ -154,27 +166,21 @@ export default {
       const highlightPositions = intervalTree.search(0, this.internalValue.length).sort((a, b) => a.start - b.start)
 
       // Construct the output with styled spans around the highlight text
-      let result = ''
+      const nodes = []
       let startingPosition = 0
       for (let position of highlightPositions) {
-        result += safeTagsReplace(this.internalValue.substring(startingPosition, position.start))
+        nodes.push(this.createNode(false, this.internalValue.substring(startingPosition, position.start)))
         position.text = this.internalValue.substring(position.start, position.end + 1) // annotate the raw text that was highlighted for onHighlight event
-        result += `<span class='${position.classList.join(' ')}' style='${position.style}'>${safeTagsReplace(position.text)}</span>`
+        nodes.push(this.createNode(true, position.text, position.classList, position.style))
         startingPosition = position.end + 1
       }
 
       // In case we exited the loop early
       if (startingPosition < this.internalValue.length) {
-        result += safeTagsReplace(this.internalValue.substring(startingPosition, this.internalValue.length))
+        nodes.push(this.createNode(false, this.internalValue.substring(startingPosition, this.internalValue.length)))
       }
 
-      // Firefox bug
-      if (result[result.length - 1] === ' ') {
-        result = result.substring(0, result.length - 1)
-        result += '&nbsp;'
-      }
-
-      this.htmlOutput = result
+      this.nodes = nodes
       this.$emit('input', this.internalValue)
       this.$emit('onHighlight', highlightPositions)
     },

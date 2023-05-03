@@ -33,17 +33,6 @@ export function getIndicesOf(searchStr, str, caseSensitive = false) {
   return indices
 }
 
-export function safeTagsReplace(str) {
-  // Source: https://stackoverflow.com/questions/5499078/fastest-method-to-escape-html-tags-as-html-entities
-  const tagsToReplace = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;'
-  }
-  const replaceTag = (tag) => tagsToReplace[tag] || tag
-  return str.replace(/[&<>]/g, replaceTag)
-}
-
 export function isRegExp(obj) {
   return obj && Object.prototype.toString.call(obj) === '[object RegExp]'
 }
