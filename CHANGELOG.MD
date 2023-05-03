@@ -1,3 +1,11 @@
+# 1.2.0 (2023-05-__)
+## SUMMARY
+**🔥 Breaking changes**
+## FEATURES
+## FIXES
+## MAINTENANCE
+## TESTING
+
 # 1.1.0 (2023-05-03)
 ## SUMMARY
 This release adds a new event `onHighlight` and updates outdated dependencies.
